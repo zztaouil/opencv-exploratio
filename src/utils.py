@@ -3,28 +3,37 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-def display_img(img, title=None):
+from math import ceil
+
+def display_img(img, title=None, color_space_flag=True):
     # converting color space BGR (default for cv2.imread) to RGB (what plt expects)
     # example color spaces: Grayscale, HSV (Hue, Saturation, Value),
     #   RGBA (Red, Green, Blue, Alpha)
     # https://opencv.org/blog/color-spaces-in-opencv/
     plt.title(title)
-    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    if color_space_flag:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    plt.imshow(img)
     # plt.imshow(img[:,:,::-1])
     plt.axis('off')
     plt.show()
 
-def display_mul_img(imgs, titles=None):
+def display_mul_img(imgs, titles=None, color_space_flag=True, rows_nb=1):
     if titles and len(imgs) != len(titles):
         return 1
+
     for i, img in enumerate(imgs):
-        plt.subplot(1, len(imgs), 1 + i)
+        plt.subplot(rows_nb, ceil(len(imgs) / rows_nb), i + 1)
         if titles:
             plt.title(titles[i])
+        if color_space_flag:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        plt.imshow(img)
         plt.axis('off')
-        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+
+    plt.tight_layout(pad=1.0)
     plt.show()
-    return 0   
+    return 0
 
 def draw_noise(img):
     pixels_nb = img.size // 5
